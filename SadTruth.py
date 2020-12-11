@@ -95,28 +95,26 @@ def main():
     print("[*] Downloading nameserver list")
     r = requests.get(dns_url)
     dns_ips = r.text.split()
-    
+    print("[*] Found {} dns ips".format(len(dns_ips)))
     print('[*] Wiping previous dns list file')
     open('dns_list.txt', 'w').close()
-    print("[*] Found {} dns ips".format(len(dns_ips)))
-    print("[*] Begin recursive server discovery phase")
+    print("[*] Beginnig recursive server discovery over DNS list")
     
     with alive_bar(len(dns_ips)) as bar:
         with concurrent.futures.ThreadPoolExecutor(max_workers=args.threads) as executor:
+            args_array = [ (ip, args.amp, bar) for ip in dns_ips ]
+            results = executor.map(dns_querier, args_array)
             try:
-                args_array = [ (ip, args.amp, bar) for ip in dns_ips ]
-                futures = executor.map(dns_querier, args_array)
-                concurrent.futures.wait(futures)
-                print('[*] Found {} open recursive DNS out of {} tested'.format(found, progress))
+                [ r for r in results ]
             except KeyboardInterrupt:
                 print('[x] Stopping kindly...')
                 executor.shutdown(wait=True)
-                print('[*] Found {} open recursive DNS out of {} tested'.format(found, progress))
+                print('  => Found {} open recursive DNS out of {} tested'.format(found, progress))
                 sys.exit(0)
-            except Exception as e :
-                print(e)
+    
+    print('[+] Finished')
+    print('  => Found {} open recursive DNS out of {} tested'.format(found, progress))
             
-
 
 if __name__ == "__main__":
     main()

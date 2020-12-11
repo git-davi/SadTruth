@@ -46,7 +46,7 @@ def is_long(resp, threshold=2):
 
 def is_open_recursive(ip, amp):
     # Idenitfy recursive DNS over UDP
-    is_recursive = None
+    is_recursive = False
 
     if amp :
         query = dns.message.make_query(domain, dns.rdatatype.ANY)
@@ -107,10 +107,11 @@ def main():
                 args_array = [ (ip, args.amp, bar) for ip in dns_ips ]
                 futures = executor.map(dns_querier, args_array)
                 concurrent.futures.wait(futures)
-            except KeyboardInterrupt:
-                print('[x] Interrupting')
                 print('[*] Found {} open recursive DNS out of {} tested'.format(found, progress))
-                executor.shutdown(wait=False)
+            except KeyboardInterrupt:
+                print('[x] Stopping kindly...')
+                executor.shutdown(wait=True)
+                print('[*] Found {} open recursive DNS out of {} tested'.format(found, progress))
                 sys.exit(0)
             except Exception as e :
                 print(e)

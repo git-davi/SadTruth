@@ -15,4 +15,4 @@ But you can use your own by simply replacing the get response content with a `f.
 
 ## Beware Script Kiddies!!
 These dns servers can be used for DNS amplification attacks.  
-DOS is an illegal so be *wise and responsible* and **use this tool only for threat intel purpose**. 
+DOS is illegal so be *wise and responsible* and **use this tool only for threat intel purpose**. 

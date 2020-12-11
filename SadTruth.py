@@ -15,7 +15,7 @@ domain = dns.name.from_text('google.com')
 def is_open_recursive(ip):
     # Idenitfy recursive DNS over UDP
 
-    query = dns.message.make_query(domain, dns.rdatatype.A)
+    query = dns.message.make_query(domain, dns.rdatatype.TXT)
     query.flags |= dns.flags.RD
     response = dns.query.udp(query, ip, timeout=2)
     return (response.flags & dns.flags.RA) == dns.flags.RA and len(response.answer) != 0

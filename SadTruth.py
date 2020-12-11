@@ -51,6 +51,7 @@ def is_open_recursive(ip, amp):
     if amp :
         query = dns.message.make_query(domain, dns.rdatatype.ANY)
         query.flags |= dns.flags.RD
+        query.use_edns(payload=4096)
         response = dns.query.udp(query, ip, timeout=2)
         is_recursive = (response.flags & dns.flags.RA) == dns.flags.RA and is_long(response)
     else :
